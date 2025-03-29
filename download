@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İndir</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .file-name {
+            color: #333;
+            font-size: 2.0em;
+            font-weight: bold;
+            display: block;
+        }
+        .file-size {
+            color: #aaa;
+            font-size: 1.0em;
+            display: block;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 15px;
+            font-size: 1.5em;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <script>
+            function getQueryParam(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+
+            async function fetchFileSize(url) {
+                try {
+                    const response = await fetch(url, { method: 'HEAD' });
+                    const size = response.headers.get('content-length');
+                    return size ? (size / (1024 * 1024)).toFixed(2) + ' MB' : 'Bilinmiyor';
+                } catch (error) {
+                    return 'Bilinmiyor';
+                }
+            }
+
+            const filePath = getQueryParam('q');
+            if (filePath) {
+                const fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+
+                fetchFileSize(filePath).then(size => {
+                    document.querySelector('.container').innerHTML = `
+                        <span class='file-name'>${fileName}</span>
+                        <span class='file-size'>${size}</span>
+                        <button onclick="window.location.href='${filePath}'">Dosyayı İndir</button>
+                    `;
+                });
+            } else {
+                document.querySelector('.container').innerHTML += '<p>Dosya yolu bulunamadı!</p>';
+            }
+        </script>
+    </div>
+</body>
+</html>
